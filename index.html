@@ -14,6 +14,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
   var redirectUrl = getParameterByName('redirectUrl') || 'en';
 
+  console.log('action', mode)
+
   // Configure the Firebase SDK.
   // This is the minimum configuration required for the API to be used.
   var config = {
@@ -25,6 +27,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Handle the user management action.
   switch (mode) {
+    case 'resetPassword':
+      // Display reset password handler and UI.
+      handleResetPassword(auth, actionCode, continueUrl, lang);
+      break;
     case 'verifyEmail':
       // Display email verification handler and UI.
       handleVerifyEmail(auth, actionCode, continueUrl, lang);
@@ -33,6 +39,57 @@ document.addEventListener('DOMContentLoaded', function() {
       // Error: invalid mode.
   }
 }, false);
+
+
+
+function getParameterByName( name ){
+  name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+  var regexS = "[\\?&]"+name+"=([^&#]*)";
+  var regex = new RegExp( regexS );
+  var results = regex.exec( window.location.href );
+  if( results == null )
+    return "";
+  else
+    return decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+
+
+function handleResetPassword(auth, actionCode, continueUrl, lang) {
+  // Localize the UI to the selected language as determined by the lang
+  // parameter.
+  var accountEmail;
+  // Verify the password reset code is valid.
+  auth.verifyPasswordResetCode(actionCode).then(function(email) {
+    var accountEmail = email;
+
+    // TODO: Show the reset screen with the user's email and ask the user for
+    // the new password.
+
+    // Save the new password.
+    auth.confirmPasswordReset(actionCode, newPassword).then(function(resp) {
+      // Password reset has been confirmed and new password updated.
+    console.log('resp', resp)
+
+      // TODO: Display a link back to the app, or sign-in the user directly
+      // if the page belongs to the same domain as the app:
+      // auth.signInWithEmailAndPassword(accountEmail, newPassword);
+
+      // TODO: If a continue URL is available, display a button which on
+      // click redirects the user back to the app via continueUrl with
+      // additional state determined from that URL's parameters.
+    }).catch(function(error) {
+
+    console.log('error', error)
+      // Error occurred during confirmation. The code might have expired or the
+      // password is too weak.
+    });
+  }).catch(function(error) {
+    console.log('error', error)
+    // Invalid or expired action code. Ask user to try to reset the password
+    // again.
+  });
+}
+
 
 function handleVerifyEmail(auth, actionCode, continueUrl, lang) {
   // Localize the UI to the selected language as determined by the lang
