@@ -68,6 +68,8 @@ function handleResetPassword(auth, actionCode, continueUrl, lang) {
     // Save the new password.
     auth.confirmPasswordReset(actionCode, newPassword).then(function(resp) {
       // Password reset has been confirmed and new password updated.
+
+     window.location.href = 'https://google.com'
     console.log('resp', resp)
 
       // TODO: Display a link back to the app, or sign-in the user directly
