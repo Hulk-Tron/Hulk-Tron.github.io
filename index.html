@@ -61,9 +61,9 @@ function handleResetPassword(auth, actionCode, continueUrl, lang) {
   // Verify the password reset code is valid.
   auth.verifyPasswordResetCode(actionCode).then(function(email) {
     var accountEmail = email;
-
     // TODO: Show the reset screen with the user's email and ask the user for
     // the new password.
+    var newPassword = prompt("Please enter new password", "New Password");
 
     // Save the new password.
     auth.confirmPasswordReset(actionCode, newPassword).then(function(resp) {
